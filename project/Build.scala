@@ -17,6 +17,6 @@ val main = play.Project(appName, appVersion, appDependencies).settings(
  resolvers += "Kundera" at "https://oss.sonatype.org/content/repositories/releases",
  resolvers += "Riptano" at "http://mvn.riptano.com/content/repositories/public",
  resolvers += "Kundera missing" at "http://kundera.googlecode.com/svn/maven2/maven-missing-resources",
- resolvers += "Local Maven Repository" at "file:\\C:\\Users\\Michal\\Desktop\\Projekty\\bd2\\.m2\\mvnrepo"
+ resolvers += "Local Maven Repository" at "file:///home/tep/.m2/mvnrepo"
  )
 }

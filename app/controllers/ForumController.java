@@ -312,6 +312,21 @@ public class ForumController extends Controller {
     /*
     h
      */
+    static class ValueComparator implements Comparator<String> {
+
+        Map<String, BigDecimal> base;
+        public ValueComparator(Map<String, BigDecimal> base) {
+            this.base = base;
+        }
+
+        public int compare(String a, String b) {
+            if(base.get(a).compareTo(base.get(b)) >= 0)
+                return -1;
+            else
+                return 1;
+        }
+    }
+    
     public static Result word35MostUsed() {
         Collection<Post> posts = Post.findAllPosts();
 
@@ -321,18 +336,18 @@ public class ForumController extends Controller {
             String[] wordTab = post.getMessage().split(" ");
             for (int i = 0; i < wordTab.length; i++) {
                 if (map.containsKey(wordTab[i])) {
-                    map.get(wordTab[i]).add(new BigDecimal(1));
+                	map.put(wordTab[i], map.get(wordTab[i]).add(new BigDecimal(1)));
                 } else {
                     map.put(wordTab[i], new BigDecimal(1));
                 }
             }
         }
 
-        String toReturn = "";
-        int size = 0;
-       // TODO: Posortowanie i wydobycie 35 wyrazu
-
-        return ok("35 used most word: " + toReturn + " with " + size + " appearances");
+        ValueComparator bvc =  new ValueComparator(map);
+        TreeMap<String,BigDecimal> sorted_map = new TreeMap<String,BigDecimal>(bvc);
+        sorted_map.putAll(map);
+        
+        return ok("35. most used word: " + sorted_map.keySet().toArray()[34] + " with " + sorted_map.get(sorted_map.keySet().toArray()[34]) + " appearances");
     }
 
 	public static Result update() {
