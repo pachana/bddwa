@@ -1,11 +1,8 @@
 package controllers;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +14,7 @@ import javax.persistence.Persistence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.avro.generic.GenericData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -219,8 +217,11 @@ public class ForumController extends Controller {
 		return ok("Found records in database with the following details:" + printUser(user));
 	}
 
+    /*
+    c
+     */
     public static Result avgPostLength() {
-        List<Post> posts = Post.findAll();
+        Collection<Post> posts = Post.findAllPosts();
 
         BigDecimal length = new BigDecimal(0);
         BigDecimal count = new BigDecimal(0);
@@ -238,7 +239,39 @@ public class ForumController extends Controller {
         }
         return ok("Avg post length: " + avg.toString());
     }
-	
+
+    /*
+    f
+     */
+    public static Result numberOfFrodoPosts() {
+        Collection<Post> posts = Post.findAllPosts();
+
+        BigDecimal count = new BigDecimal(0);
+
+        for (Post post : posts) {
+            if (post.getMessage().contains("Frodo")) {
+                count = count.add(new BigDecimal(1));
+            }
+        }
+        return ok("Number of post with 'Frodo': " + count.toString());
+    }
+
+    /*
+    g
+     */
+    public static Result numberOfPostsFromCityK() {
+        Collection<Post> posts = Post.findAllPosts();
+
+        BigDecimal count = new BigDecimal(0);
+
+        for (Post post : posts) {
+            if (post.getUser().getCity().startsWith("K")) {
+                count = count.add(new BigDecimal(1));
+            }
+        }
+        return ok("Number of post from users in 'K' city: " + count.toString());
+    }
+
 	public static Result update() {
 		EntityManager em = getEmf().createEntityManager();
 		em.setFlushMode(FlushModeType.COMMIT);

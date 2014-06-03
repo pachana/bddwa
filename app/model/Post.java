@@ -1,11 +1,7 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -85,5 +81,12 @@ public class Post {
 
     public static List<Post> findAll(){
         return findAll();
+    }
+
+    public static Collection<Post> findAllPosts() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");;
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT e FROM posts e");
+        return (Collection<Post>) query.getResultList();
     }
 }
