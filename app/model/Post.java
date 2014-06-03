@@ -79,14 +79,4 @@ public class Post {
 	public User getUser() {
 		return this.user;
 	}
-
-    public static List<Post> findAllPosts() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");
-        EntityManager em = emf.createEntityManager();
-        em.setProperty("cql.version", "3.0.0");
-        Query query = em.createNativeQuery("SELECT * FROM posts LIMIT 100000", Post.class);
-        List<Post> toRet = (List<Post>) query.getResultList();
-        em.close();
-        return toRet;
-    }
 }

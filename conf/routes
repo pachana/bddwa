@@ -12,4 +12,4 @@ GET /persist controllers.ForumController.persist()
 
 GET /find controllers.ForumController.find()
 
-GET /threads_count controllers.ForumController.threadsFrom2013()
+GET /avg controllers.ForumController.avgPostLength()

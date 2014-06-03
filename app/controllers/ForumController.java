@@ -1,6 +1,7 @@
 package controllers;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
 import java.io.File;
 import java.util.regex.Matcher;
@@ -225,19 +226,6 @@ public class ForumController extends Controller {
 		return ok("Found records in database with the following details:" + printThread(user));
 	}
 
-	/*
-    a
-     */
-    public static Result threadsFrom2013() {
-    	// DOPISAĆ DATY !!!
-		EntityManager em = getEmf().createEntityManager();
-		em.setProperty("cql.version", "3.0.0");
-		Query query = em.createNativeQuery("SELECT * FROM forum_threads LIMIT 100000", ForumThread.class);
-	    List<ForumThread> threads= (List<ForumThread>) query.getResultList();
-	    em.close();
-        return ok("Found: "+threads.size());
-    }
-
     /*
     b
      */
@@ -255,8 +243,7 @@ public class ForumController extends Controller {
     c
      */
     public static Result avgPostLength() {
-        List<Post> posts = Post.findAllPosts();
-
+    	List<Post> posts = findAllPosts();
         BigDecimal length = new BigDecimal(0);
         BigDecimal count = new BigDecimal(0);
 
@@ -267,7 +254,7 @@ public class ForumController extends Controller {
 
         BigDecimal avg;
         if (!count.equals(new BigDecimal(0))){
-            avg = length.divide(count);
+            avg = length.divide(count, MathContext.DECIMAL128);
         } else {
             avg = new BigDecimal(0);
         }
@@ -278,7 +265,7 @@ public class ForumController extends Controller {
     d
      */
     public static Result mostThreadsUser() {
-        List<Post> posts = Post.findAllPosts();
+        List<Post> posts = findAllPosts();
 
         HashMap<User, List<ForumThread>> map = new HashMap<User, List<ForumThread>>();
 
@@ -314,7 +301,7 @@ public class ForumController extends Controller {
     f
      */
     public static Result numberOfFrodoPosts() {
-        List<Post> posts = Post.findAllPosts();
+        List<Post> posts = findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
 
@@ -330,7 +317,7 @@ public class ForumController extends Controller {
     g
      */
     public static Result numberOfPostsFromCityK() {
-        List<Post> posts = Post.findAllPosts();
+        List<Post> posts = findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
 
@@ -361,7 +348,7 @@ public class ForumController extends Controller {
     }
     
     public static Result word35MostUsed() {
-        List<Post> posts = Post.findAllPosts();
+        List<Post> posts = findAllPosts();
 
         HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
@@ -381,6 +368,23 @@ public class ForumController extends Controller {
         sorted_map.putAll(map);
         
         return ok("35. most used word: " + sorted_map.keySet().toArray()[34] + " with " + sorted_map.get(sorted_map.keySet().toArray()[34]) + " appearances");
+    }
+    
+    public static List<Post> findAllPosts() {
+    	List<Post> posts = new ArrayList<Post>();
+    	EntityManager em = getEmf().createEntityManager();
+		int i=1;
+		boolean flag = true;
+    	while(flag) {
+    		Post post = em.find(Post.class, i);
+    		i++;
+    		if(post == null) 
+    			flag = false;
+    		else
+    			posts.add(post);
+    	}
+	    em.close();
+	    return posts;
     }
 
 	public static Result update() {
