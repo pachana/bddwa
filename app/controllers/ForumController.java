@@ -26,6 +26,7 @@ import model.User;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.util.matching.Regex;
 
 public class ForumController extends Controller {
 
@@ -306,6 +307,32 @@ public class ForumController extends Controller {
             }
         }
         return ok("Number of post from users in 'K' city: " + count.toString());
+    }
+
+    /*
+    h
+     */
+    public static Result word35MostUsed() {
+        Collection<Post> posts = Post.findAllPosts();
+
+        HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+
+        for (Post post : posts) {
+            String[] wordTab = post.getMessage().split(" ");
+            for (int i = 0; i < wordTab.length; i++) {
+                if (map.containsKey(wordTab[i])) {
+                    map.get(wordTab[i]).add(new BigDecimal(1));
+                } else {
+                    map.put(wordTab[i], new BigDecimal(1));
+                }
+            }
+        }
+
+        String toReturn = "";
+        int size = 0;
+       // TODO: Posortowanie i wydobycie 35 wyrazu
+
+        return ok("35 used most word: " + toReturn + " with " + size + " appearances");
     }
 
 	public static Result update() {
