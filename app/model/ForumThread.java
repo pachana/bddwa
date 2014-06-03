@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name="ForumThread")
-@Table(name = "forum_threads", schema = "ForumDB@cassandra_pu")
+@Table(name = "forum_threads", schema = "jaja@cassandra_pu")
 public class ForumThread {
 
 	@Id

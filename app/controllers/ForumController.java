@@ -21,6 +21,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.impetus.client.cassandra.pelops.PelopsClient;
+import com.impetus.kundera.client.Client;
+
 import model.ForumThread;
 import model.Post;
 import model.User;
@@ -221,6 +224,19 @@ public class ForumController extends Controller {
 		em.close();
 		return ok("Found records in database with the following details:" + printThread(user));
 	}
+
+	/*
+    a
+     */
+    public static Result threadsFrom2013() {
+    	// DOPISAĆ DATY !!!
+		EntityManager em = getEmf().createEntityManager();
+		em.setProperty("cql.version", "3.0.0");
+		Query query = em.createNativeQuery("SELECT * FROM forum_threads LIMIT 100000", ForumThread.class);
+	    List<ForumThread> threads= (List<ForumThread>) query.getResultList();
+	    em.close();
+        return ok("Found: "+threads.size());
+    }
     
     /*
     c

@@ -1,11 +1,12 @@
 package model;
 
 import javax.persistence.*;
+
 import java.util.Collection;
 import java.util.List;
 
 @Entity(name="Post")
-@Table(name = "posts", schema = "ForumDB@cassandra_pu")
+@Table(name = "posts", schema = "jaja@cassandra_pu")
 public class Post {
 
 	@Id
@@ -79,14 +80,13 @@ public class Post {
 		return this.user;
 	}
 
-    public static List<Post> findAll(){
-        return findAll();
-    }
-
-    public static Collection<Post> findAllPosts() {
+    public static List<Post> findAllPosts() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT p FROM Post p");
-        return (Collection<Post>) query.getResultList();
+        em.setProperty("cql.version", "3.0.0");
+        Query query = em.createNativeQuery("SELECT * FROM posts LIMIT 100000", Post.class);
+        List<Post> toRet = (List<Post>) query.getResultList();
+        em.close();
+        return toRet;
     }
 }

@@ -19,7 +19,7 @@ version="2.0">
 
 <property name="kundera.port" value="9160"/>
 
-<property name="kundera.keyspace" value="ForumBD"/>
+<property name="kundera.keyspace" value="jaja"/>
 
 <property name="kundera.dialect" value="cassandra"/>
 
