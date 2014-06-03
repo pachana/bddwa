@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
+@Entity(name="Post")
 @Table(name = "posts", schema = "ForumDB@cassandra_pu")
 public class Post {
 
@@ -84,9 +84,9 @@ public class Post {
     }
 
     public static Collection<Post> findAllPosts() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");;
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("cassandra_pu");
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT e FROM posts e");
+        Query query = em.createQuery("SELECT p FROM Post p");
         return (Collection<Post>) query.getResultList();
     }
 }

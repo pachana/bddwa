@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name="User")
 @Table(name = "users", schema = "ForumDB@cassandra_pu")
 public class User {
 

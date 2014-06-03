@@ -11,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -148,6 +149,7 @@ public class ForumController extends Controller {
 				} else {
 					tmpThread = new ForumThread();
 					tmpThread.setTitle(parsedTitle);
+					System.out.println(forumThreads.size()+1);
 					tmpThread.setThreadId(forumThreads.size()+1);
 					forumThreads.put(parsedTitle, tmpThread);
 				}
@@ -160,6 +162,8 @@ public class ForumController extends Controller {
 				tmpPost.setThread(tmpThread);
 				tmpPost.setPostId(posts.size()+1);
 				posts.add(tmpPost);
+				
+				
 			}
 		}
 		
@@ -212,12 +216,12 @@ public class ForumController extends Controller {
 	public static Result find() {
 		EntityManager em = getEmf().createEntityManager();
 
-		User user = em.find(User.class, "Istyar");
+		ForumThread user = em.find(ForumThread.class, 101);
 
 		em.close();
-		return ok("Found records in database with the following details:" + printUser(user));
+		return ok("Found records in database with the following details:" + printThread(user));
 	}
-
+    
     /*
     c
      */
