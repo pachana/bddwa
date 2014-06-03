@@ -1,5 +1,6 @@
 package controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.io.File;
 import java.util.ArrayList;
@@ -218,6 +219,25 @@ public class ForumController extends Controller {
 		return ok("Found records in database with the following details:" + printUser(user));
 	}
 
+    public static Result avgPostLength() {
+        List<Post> posts = Post.findAll();
+
+        BigDecimal length = new BigDecimal(0);
+        BigDecimal count = new BigDecimal(0);
+
+        for (Post post : posts) {
+            length = length.add(new BigDecimal(post.getMessage().length()));
+            count = count.add(new BigDecimal(1));
+        }
+
+        BigDecimal avg;
+        if (!count.equals(new BigDecimal(0))){
+            avg = length.divide(count);
+        } else {
+            avg = new BigDecimal(0);
+        }
+        return ok("Avg post length: " + avg.toString());
+    }
 	
 	public static Result update() {
 		EntityManager em = getEmf().createEntityManager();

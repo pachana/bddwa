@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "posts", schema = "ForumDB@cassandra_pu")
@@ -82,4 +83,7 @@ public class Post {
 		return this.user;
 	}
 
+    public static List<Post> findAll(){
+        return findAll();
+    }
 }
