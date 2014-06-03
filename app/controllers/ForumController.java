@@ -237,6 +237,19 @@ public class ForumController extends Controller {
 	    em.close();
         return ok("Found: "+threads.size());
     }
+
+    /*
+    b
+     */
+    public static Result mostPopularThreadMay2013() {
+        // TODO: daty i zliczanie
+        EntityManager em = getEmf().createEntityManager();
+        em.setProperty("cql.version", "3.0.0");
+        Query query = em.createNativeQuery("SELECT * FROM posts WHERE (date > date(1 may 2013) AND date < date(31 may 2013))  LIMIT 100000", ForumThread.class);
+        List<ForumThread> threads= (List<ForumThread>) query.getResultList();
+        em.close();
+        return ok("Most popular thread in may 2013: " + threads.size());
+    }
     
     /*
     c
