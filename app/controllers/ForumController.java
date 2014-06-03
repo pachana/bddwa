@@ -255,7 +255,7 @@ public class ForumController extends Controller {
     c
      */
     public static Result avgPostLength() {
-        Collection<Post> posts = Post.findAllPosts();
+        List<Post> posts = Post.findAllPosts();
 
         BigDecimal length = new BigDecimal(0);
         BigDecimal count = new BigDecimal(0);
@@ -278,7 +278,7 @@ public class ForumController extends Controller {
     d
      */
     public static Result mostThreadsUser() {
-        Collection<Post> posts = Post.findAllPosts();
+        List<Post> posts = Post.findAllPosts();
 
         HashMap<User, List<ForumThread>> map = new HashMap<User, List<ForumThread>>();
 
@@ -314,7 +314,7 @@ public class ForumController extends Controller {
     f
      */
     public static Result numberOfFrodoPosts() {
-        Collection<Post> posts = Post.findAllPosts();
+        List<Post> posts = Post.findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
 
@@ -330,7 +330,7 @@ public class ForumController extends Controller {
     g
      */
     public static Result numberOfPostsFromCityK() {
-        Collection<Post> posts = Post.findAllPosts();
+        List<Post> posts = Post.findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
 
@@ -361,7 +361,7 @@ public class ForumController extends Controller {
     }
     
     public static Result word35MostUsed() {
-        Collection<Post> posts = Post.findAllPosts();
+        List<Post> posts = Post.findAllPosts();
 
         HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
