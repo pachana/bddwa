@@ -168,8 +168,6 @@ public class ForumController extends Controller {
 	
 	public static Result persist() {
 		
-		// !!!!!!! POMIERZYĆ CZASY ZAPISU DO BAZY !!!!!!!
-		
 		if(users == null && posts == null && forumThreads == null)
 			return ok("Input not parsed yet! Parse input first!");
 		
@@ -178,6 +176,7 @@ public class ForumController extends Controller {
 		EntityTransaction tx = em.getTransaction();
 		String message = null;
 		
+		long startTime = System.nanoTime();
 		try {
 			tx.begin();
 			for(User user: users.values()) 
@@ -198,9 +197,11 @@ public class ForumController extends Controller {
 				}
 				e.printStackTrace();
 		}
+		long stopTime = System.nanoTime();
+
 		
 		if(message == null) {
-			message = "User, thread and post records persisted.";
+			message = "User, thread and post records persisted. Time: "+((stopTime-startTime)/1000000000.0);
 		}
 
 		em.close();	
@@ -211,7 +212,7 @@ public class ForumController extends Controller {
 	public static Result find() {
 		EntityManager em = getEmf().createEntityManager();
 
-		User user = em.find(User.class, "Vilwarin");
+		User user = em.find(User.class, "Istyar");
 
 		em.close();
 		return ok("Found records in database with the following details:" + printUser(user));
