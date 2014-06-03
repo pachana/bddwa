@@ -241,6 +241,42 @@ public class ForumController extends Controller {
     }
 
     /*
+    d
+     */
+    public static Result mostThreadsUser() {
+        Collection<Post> posts = Post.findAllPosts();
+
+        HashMap<User, List<ForumThread>> map = new HashMap<User, List<ForumThread>>();
+
+        for (Post post : posts) {
+            if (map.containsKey(post.getUser())) {
+                if (!map.get(post.getUser()).contains(post.getThread())) {
+                    map.get(post.getUser()).add(post.getThread());
+                }
+            } else {
+                ArrayList<ForumThread> tmp = new ArrayList<ForumThread>();
+                tmp.add(post.getThread());
+                map.put(post.getUser(), tmp);
+            }
+        }
+
+        User toReturn = null;
+        int size = 0;
+        for (Map.Entry<User, List<ForumThread>> entry : map.entrySet()) {
+            if (entry.getValue().size() > size) {
+                toReturn = entry.getKey();
+                size = entry.getValue().size();
+            }
+        }
+
+        if (toReturn != null) {
+            return ok("User with most threads: " + toReturn.getLogin() + " with " + size + " threads");
+        } else {
+            return ok("Something went wrong :(");
+        }
+    }
+
+    /*
     f
      */
     public static Result numberOfFrodoPosts() {
