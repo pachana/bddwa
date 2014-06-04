@@ -2,6 +2,7 @@ package controllers;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.File;
 import java.util.regex.Matcher;
@@ -160,13 +161,15 @@ public class ForumController extends Controller {
 				
 				tmpPost = new Post();
 				tmpPost.setMessage(parsedMessage);
-				tmpPost.setDate(parsedPostDate);
+				Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH).parse(parsedPostDate);
+				tmpPost.setDate(date);
 				tmpPost.setTitle(parsedPostTitle);
 				tmpPost.setUser(tmpUser);
 				tmpPost.setThread(tmpThread);
 				tmpPost.setPostId(posts.size()+1);
 				posts.add(tmpPost);
 				
+				//TODO DOPISAĆ DATY DO WĄTKÓW 
 				
 			}
 		}
@@ -251,13 +254,13 @@ public class ForumController extends Controller {
         HashMap<ForumThread, BigDecimal> map = new HashMap<ForumThread, BigDecimal>();
 
         for (Post post : posts) {
-//            if (post.getDate().){
+            if (post.getDate().getMonth() == 5 && post.getDate().getYear() == 2013){
                 if (map.containsKey(post.getThread())) {
                     map.get(post.getThread()).add(new BigDecimal(1));
                 } else {
                     map.put(post.getThread(), new BigDecimal(1));
                 }
-//            }
+            }
         }
 
         ForumThread toReturn = null;

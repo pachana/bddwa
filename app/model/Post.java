@@ -3,6 +3,7 @@ package model;
 import javax.persistence.*;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity(name="Post")
@@ -21,7 +22,7 @@ public class Post {
 	private String message;
 
 	@Column
-	private String date;
+	private Date date;
 	
 	@Column
 	private String title;
@@ -47,7 +48,7 @@ public class Post {
 		this.title = title;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
@@ -72,7 +73,7 @@ public class Post {
 		return this.title;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return this.date;
 	}
 
