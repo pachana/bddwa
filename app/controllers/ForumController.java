@@ -189,7 +189,6 @@ public class ForumController extends Controller {
         }
         return toRet;
     }
-    
 	
 	public static Result persist() {
 		
@@ -239,16 +238,7 @@ public class ForumController extends Controller {
 		
 		return ok(message);
 	}
-
-	public static Result find() {
-		EntityManager em = getEmf().createEntityManager();
-
-		ForumThread user = em.find(ForumThread.class, 101);
-
-		em.close();
-		return ok("Found records in database with the following details:" + printThread(user));
-	}
-
+	
     /*
     a
     */
@@ -522,146 +512,12 @@ public class ForumController extends Controller {
         return forumThreads;
     }
 
-	public static Result update() {
-		EntityManager em = getEmf().createEntityManager();
-		em.setFlushMode(FlushModeType.COMMIT);
-		EntityTransaction tx = em.getTransaction();
-		
-		User user = null;
-		ForumThread thread = null;
-		Post post = null;
-		String message = null;
-		
-		try {
-			
-			tx.begin();
-	
-			user = em.find(User.class, "alan");
-			user.setCity("New York");
-			
-			em.merge(user);
-			
-			thread = em.find(ForumThread.class, 1);
-			thread.setTitle("welcome again");
-	
-			em.merge(thread);
-	
-			post = em.find(Post.class, 1);
-	
-			em.merge(post);
-			tx.commit();
-		
-		} catch (Exception e) {
-			try {
-				message = "Changes rollbacked: ";
-				if((tx != null) && (tx.isActive())) {
-					tx.rollback();
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		
-		em.clear();
-		
-		user = em.find(User.class, "alan");
-		thread = em.find(ForumThread.class, 1);
-		post = em.find(Post.class, 1);
-		
-		if (message == null) {
-			message = "Records updated:";
-		}
-
-		em.close();
-		return ok(message + printUser(user) + printThread(thread) + printPost(post));
-	}
-
-	
-	public static Result delete() {
-		EntityManager em = getEmf().createEntityManager();
-		em.setFlushMode(FlushModeType.COMMIT);
-		EntityTransaction tx = em.getTransaction();
-		
-		User user = null;
-		ForumThread thread = null;
-		Post post = null;
-		String message = null;
-		
-		try {
-			tx.begin();
-			
-			user = em.find(User.class, "alan");
-			em.remove(user);
-			
-			thread = em.find(ForumThread.class, 1);
-			em.remove(thread);
-			
-			post = em.find(Post.class, 1);
-			em.remove(post);
-			
-			tx.commit();
-			
-		} catch (Exception e) {
-			try {
-				message = "Changes rollbacked: ";
-				if((tx != null) && (tx.isActive())) {
-					tx.rollback();
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-
-		em.clear();
-
-		user = em.find(User.class, "alan");
-		thread = em.find(ForumThread.class, 1);
-		post = em.find(Post.class, 1);
-		
-		if(message == null) {
-			message = "Records deleted : ";
-		}
-		em.close();
-		return ok(message + "\nuser: " + printUser(user) + "\nthread: " + printThread(thread)
-				+ "\npost: " + printPost(post));
-	}
-
 	private static EntityManagerFactory getEmf() {
 
 		if (emf == null) {
 			emf = Persistence.createEntityManagerFactory("cassandra_pu");
 		}
 		return emf;
-	}
-
-	private static String printUser(User user) {
-
-		if (user == null) {
-			return "\n--------------------------------------------------\nRecord not found";
-		}
-		return "\n--------------------------------------------------" + "\nlogin:"
-				+ user.getLogin() + "\ncity:" + user.getCity() + "\ndate created:"
-				+ user.getDateCreated();
-	}
-
-	private static String printPost(Post post) {
-
-		if (post == null) {
-			return "\n--------------------------------------------------\nRecord not found";
-		}
-		return "\n--------------------------------------------------" + "\npost:"
-				+ post.getPostId() + "\nthread:" + post.getThread().getThreadId() + "\nmessage:"
-				+ post.getMessage() + "\ndate:" + post.getDate() + "\nuser:"
-				+ post.getUser().getLogin();
-	}
-
-	private static String printThread(ForumThread thread) {
-
-		if (thread == null) {
-			return "\n--------------------------------------------------\nRecord not found";
-		}
-		return "\n--------------------------------------------------" + "\nthread id:"
-				+ thread.getThreadId() + "\ntitle:" + thread.getTitle();
 	}
 
 }

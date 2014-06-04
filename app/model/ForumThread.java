@@ -17,7 +17,7 @@ public class ForumThread {
 	@Column
 	private String title;
 
-    @Column
+    @Column(name = "date")
     private Date date;
     
     @Column
