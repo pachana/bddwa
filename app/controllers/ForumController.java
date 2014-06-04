@@ -227,10 +227,26 @@ public class ForumController extends Controller {
 	}
 
     /*
+    a
+    */
+    public static Result numberOfThreadsCreatedIn2013() {
+        // TODO: zrobienie porownywania dat przed zwiekszeniem size
+        List<ForumThread> forumThreads = findAllThreads();
+        int size = 0;
+
+        for (ForumThread forumThred : forumThreads) {
+//            if (forumThread.getDate().){
+            size++;
+//            }
+        }
+        return ok("Number of threads created in 2013: " + size);
+    }
+
+    /*
     b
      */
     public static Result mostPopularThreadMay2013() {
-        // TODO: zrobienie porownywania dat przy wczytywaniu daty
+        // TODO: zrobienie porownywania dat przed dodaniem do mapy
         List<Post> posts = findAllPosts();
         HashMap<ForumThread, BigDecimal> map = new HashMap<ForumThread, BigDecimal>();
 
@@ -406,6 +422,23 @@ public class ForumController extends Controller {
     	}
 	    em.close();
 	    return posts;
+    }
+
+    public static List<ForumThread> findAllThreads(){
+        List<ForumThread> forumThreads = new ArrayList<ForumThread>();
+        EntityManager em = getEmf().createEntityManager();
+        int i=1;
+        boolean flag = true;
+        while(flag) {
+            ForumThread forumThread = em.find(ForumThread.class, i);
+            i++;
+            if(forumThread == null)
+                flag = false;
+            else
+                forumThreads.add(forumThread);
+        }
+        em.close();
+        return forumThreads;
     }
 
 	public static Result update() {
