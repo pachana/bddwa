@@ -172,23 +172,19 @@ public class ForumController extends Controller {
 			}
 		}
 
-        for(ForumThread ft : forumThreads.values()){
-            ft.setDate(getThreadCreateDate(ft));
-        }
-
 		return ok("Parsed successfully!");
 	}
 
-    public static Date getThreadCreateDate(ForumThread forumThread){
-        Date toRet = null;
+    public static Post getOldestThreadPost(ForumThread forumThread){
+        Post toRet = null;
         for(Post post : posts){
-            if(post.getThread().equals(forumThread)) {
+            if(post.getThread() == forumThread) {
                 if (toRet != null) {
-                    if (post.getDate().before(toRet)) {
-                        toRet = post.getDate();
+                    if (post.getDate().before(toRet.getDate())) {
+                        toRet = post;
                     }
                 } else {
-                    toRet = post.getDate();
+                    toRet = post;
                 }
             }
         }
@@ -199,6 +195,10 @@ public class ForumController extends Controller {
 		
 		if(users == null && posts == null && forumThreads == null)
 			return ok("Input not parsed yet! Parse input first!");
+		
+		for(ForumThread ft : forumThreads.values()){
+            ft.setDate(getOldestThreadPost(ft).getDate());
+        }
 		
 		EntityManager em = getEmf().createEntityManager();
 		em.setFlushMode(FlushModeType.COMMIT);
@@ -253,14 +253,15 @@ public class ForumController extends Controller {
     public static Result numberOfThreadsCreatedIn2013() {
         List<ForumThread> forumThreads = findAllThreads();
         int size = 0;
-
+    
         for (ForumThread forumThread : forumThreads) {
             if(forumThread.getDate() != null) {
-                if (forumThread.getDate().getYear() == 2013) {
+                if (forumThread.getDate().getYear() == 113) {
                     size++;
                 }
             }
         }
+
         return ok("Number of threads created in 2013: " + size);
     }
 
@@ -269,21 +270,21 @@ public class ForumController extends Controller {
      */
     public static Result mostPopularThreadMay2013() {
         List<Post> posts = findAllPosts();
-        HashMap<ForumThread, BigDecimal> map = new HashMap<ForumThread, BigDecimal>();
+        HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
         for (Post post : posts) {
-            if (post.getDate().getMonth() == 5 && post.getDate().getYear() == 2013){
-                if (map.containsKey(post.getThread())) {
-                    map.get(post.getThread()).add(new BigDecimal(1));
+            if (post.getDate().getMonth() == 4 && post.getDate().getYear() == 113){
+                if (map.containsKey(post.getThread().getTitle())) {
+                    map.put(post.getThread().getTitle(), map.get(post.getThread().getTitle()).add(new BigDecimal(1)));
                 } else {
-                    map.put(post.getThread(), new BigDecimal(1));
+                    map.put(post.getThread().getTitle(), new BigDecimal(1));
                 }
             }
         }
-
-        ForumThread toReturn = null;
+        
+        String toReturn = null;
         BigDecimal size = new BigDecimal(0);
-        for (Map.Entry<ForumThread, BigDecimal> entry : map.entrySet()) {
+        for (Map.Entry<String, BigDecimal> entry : map.entrySet()) {
             if (entry.getValue().compareTo(size) > 0) {
                 toReturn = entry.getKey();
                 size = entry.getValue();
@@ -291,7 +292,7 @@ public class ForumController extends Controller {
         }
 
         if (toReturn != null) {
-            return ok("Most popular thread in may 2013: " + toReturn.getTitle() + " with: " + size.toString() + " threads");
+            return ok("Most popular thread in may 2013: " + toReturn + " with: " + size.toString() + " posts");
         } else {
             return ok("Something went wrong :(");
         }
@@ -325,23 +326,23 @@ public class ForumController extends Controller {
     public static Result mostThreadsUser() {
         List<Post> posts = findAllPosts();
 
-        HashMap<User, List<ForumThread>> map = new HashMap<User, List<ForumThread>>();
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
 
         for (Post post : posts) {
-            if (map.containsKey(post.getUser())) {
-                if (!map.get(post.getUser()).contains(post.getThread())) {
-                    map.get(post.getUser()).add(post.getThread());
+            if (map.containsKey(post.getUser().getLogin())) {
+                if (!map.get(post.getUser().getLogin()).contains(post.getThread().getTitle())) {
+                    map.get(post.getUser().getLogin()).add(post.getThread().getTitle());
                 }
             } else {
-                ArrayList<ForumThread> tmp = new ArrayList<ForumThread>();
-                tmp.add(post.getThread());
-                map.put(post.getUser(), tmp);
+                ArrayList<String> tmp = new ArrayList<String>();
+                tmp.add(post.getThread().getTitle());
+                map.put(post.getUser().getLogin(), tmp);
             }
         }
 
-        User toReturn = null;
+        String toReturn = null;
         int size = 0;
-        for (Map.Entry<User, List<ForumThread>> entry : map.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
             if (entry.getValue().size() > size) {
                 toReturn = entry.getKey();
                 size = entry.getValue().size();
@@ -349,10 +350,18 @@ public class ForumController extends Controller {
         }
 
         if (toReturn != null) {
-            return ok("User with most threads: " + toReturn.getLogin() + " with " + size + " threads");
+            return ok("User with most threads: " + toReturn + " with " + size + " threads");
         } else {
             return ok("Something went wrong :(");
         }
+    }
+    
+    /*
+     * e
+     */
+    public static Result mostCommentedUser() {
+    	// TODO implement
+    	return ok("Not implemented yet");
     }
 
     /*
@@ -410,7 +419,9 @@ public class ForumController extends Controller {
         TreeMap<String,BigDecimal> sorted_map = new TreeMap<String,BigDecimal>(bvc);
         sorted_map.putAll(map);
         
-        return ok("35. most used word: " + sorted_map.keySet().toArray()[34] + " with " + sorted_map.get(sorted_map.keySet().toArray()[34]) + " appearances");
+        String word = sorted_map.keySet().toArray()[34].toString();
+        
+        return ok("35. most used word: " + word + " with " + map.get(word) + " appearances");
     }
 
     static class ValueComparator implements Comparator<String> {

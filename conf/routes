@@ -12,4 +12,19 @@ GET /persist controllers.ForumController.persist()
 
 GET /find controllers.ForumController.find()
 
-GET /avg controllers.ForumController.avgPostLength()
+GET /a controllers.ForumController.numberOfThreadsCreatedIn2013()
+
+GET /b controllers.ForumController.mostPopularThreadMay2013()
+
+GET /c controllers.ForumController.avgPostLength()
+
+GET /d controllers.ForumController.mostThreadsUser()
+
+GET /e controllers.ForumController.mostCommentedUser()
+
+GET /f controllers.ForumController.numberOfFrodoPosts()
+
+GET /g controllers.ForumController.numberOfPostsFromCityK()
+
+GET /h controllers.ForumController.word35MostUsed()
+
