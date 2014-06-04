@@ -166,16 +166,34 @@ public class ForumController extends Controller {
 				tmpPost.setTitle(parsedPostTitle);
 				tmpPost.setUser(tmpUser);
 				tmpPost.setThread(tmpThread);
-				tmpPost.setPostId(posts.size()+1);
+				tmpPost.setPostId(posts.size() + 1);
 				posts.add(tmpPost);
-				
-				//TODO DOPISAĆ DATY DO WĄTKÓW 
-				
+
 			}
 		}
-		
+
+        for(ForumThread ft : forumThreads.values()){
+            ft.setDate(getThreadCreateDate(ft));
+        }
+
 		return ok("Parsed successfully!");
 	}
+
+    public static Date getThreadCreateDate(ForumThread forumThread){
+        Date toRet = null;
+        for(Post post : posts){
+            if(post.getThread().equals(forumThread)) {
+                if (toRet != null) {
+                    if (post.getDate().before(toRet)) {
+                        toRet = post.getDate();
+                    }
+                } else {
+                    toRet = post.getDate();
+                }
+            }
+        }
+        return toRet;
+    }
 	
 	public static Result persist() {
 		
@@ -233,14 +251,13 @@ public class ForumController extends Controller {
     a
     */
     public static Result numberOfThreadsCreatedIn2013() {
-        // TODO: zrobienie porownywania dat przed zwiekszeniem size
         List<ForumThread> forumThreads = findAllThreads();
         int size = 0;
 
-        for (ForumThread forumThred : forumThreads) {
-//            if (forumThread.getDate().){
-            size++;
-//            }
+        for (ForumThread forumThread : forumThreads) {
+            if (forumThread.getDate().getYear() == 2013){
+              size++;
+           }
         }
         return ok("Number of threads created in 2013: " + size);
     }
@@ -249,7 +266,6 @@ public class ForumController extends Controller {
     b
      */
     public static Result mostPopularThreadMay2013() {
-        // TODO: zrobienie porownywania dat przed dodaniem do mapy
         List<Post> posts = findAllPosts();
         HashMap<ForumThread, BigDecimal> map = new HashMap<ForumThread, BigDecimal>();
 
