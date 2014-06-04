@@ -154,7 +154,6 @@ public class ForumController extends Controller {
 				} else {
 					tmpThread = new ForumThread();
 					tmpThread.setTitle(parsedTitle);
-					System.out.println(forumThreads.size()+1);
 					tmpThread.setThreadId(forumThreads.size()+1);
 					forumThreads.put(parsedTitle, tmpThread);
 				}
@@ -177,19 +176,20 @@ public class ForumController extends Controller {
 
     public static Post getOldestThreadPost(ForumThread forumThread){
         Post toRet = null;
-        for(Post post : posts){
-            if(post.getThread() == forumThread) {
+        for(Post poscik : posts){
+            if(poscik.getThread().getTitle() == forumThread.getTitle()) {
                 if (toRet != null) {
-                    if (post.getDate().before(toRet.getDate())) {
-                        toRet = post;
+                    if (poscik.getDate().before(toRet.getDate())) {
+                        toRet = poscik;
                     }
                 } else {
-                    toRet = post;
+                    toRet = poscik;
                 }
             }
         }
         return toRet;
     }
+    
 	
 	public static Result persist() {
 		
@@ -197,7 +197,9 @@ public class ForumController extends Controller {
 			return ok("Input not parsed yet! Parse input first!");
 		
 		for(ForumThread ft : forumThreads.values()){
-            ft.setDate(getOldestThreadPost(ft).getDate());
+			Post oldest = getOldestThreadPost(ft);
+            ft.setDate(oldest.getDate());
+            ft.setAuthor(oldest.getUser().getLogin());
         }
 		
 		EntityManager em = getEmf().createEntityManager();
@@ -359,17 +361,18 @@ public class ForumController extends Controller {
     /*
      e
      */
-    public static Result mostCommentedUser() {List<Post> posts = findAllPosts();
-
+    public static Result mostCommentedUser() {
+    	List<Post> allPosts = findAllPosts();
+    	
         HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-
-        for (Post post : posts) {
-            if(post.getUser().getLogin() != getOldestThreadPost(post.getThread()).getUser().getLogin()) {
+        
+        for (Post post : allPosts) {
+            if(post.getUser().getLogin() != post.getThread().getAuthor()) {
                 if (map.containsKey(post.getUser().getLogin())) {
-                    map.get(post.getUser().getLogin()).add(getOldestThreadPost(post.getThread()).getUser().getLogin());
+                    map.get(post.getUser().getLogin()).add(post.getThread().getAuthor());
                 } else {
                     ArrayList<String> tmp = new ArrayList<String>();
-                    tmp.add(getOldestThreadPost(post.getThread()).getUser().getLogin());
+                    tmp.add(post.getThread().getAuthor());
                     map.put(post.getUser().getLogin(), tmp);
                 }
             }

@@ -19,6 +19,9 @@ public class ForumThread {
 
     @Column
     private Date date;
+    
+    @Column
+    private String author;
 
 	public int getThreadId() {
 		return this.threadId;
@@ -27,8 +30,13 @@ public class ForumThread {
 	public String getTitle() {
 		return this.title;
 	}
+	
     public Date getDate() {
         return date;
+    }
+    
+    public String getAuthor() {
+    	return author;
     }
 
     public void setDate(Date date) {
@@ -41,5 +49,9 @@ public class ForumThread {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }
