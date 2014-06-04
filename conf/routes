@@ -6,6 +6,8 @@ GET /assets/*file controllers.Assets.at(path="/public", file)
 
 ################# User Controller###############
 
+GET / controllers.Application.index()
+
 GET /parse controllers.ForumController.parseData()
 
 GET /persist controllers.ForumController.persist()

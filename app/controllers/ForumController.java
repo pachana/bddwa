@@ -253,6 +253,7 @@ public class ForumController extends Controller {
     a
     */
     public static Result numberOfThreadsCreatedIn2013() {
+    	long startTime = System.nanoTime();
         List<ForumThread> forumThreads = findAllThreads();
         int size = 0;
     
@@ -263,14 +264,16 @@ public class ForumController extends Controller {
                 }
             }
         }
+		long stopTime = System.nanoTime();
 
-        return ok("Number of threads created in 2013: " + size);
+        return ok("Number of threads created in 2013: " + size+ " Time: "+((stopTime-startTime)/1000000000.0));
     }
 
     /*
     b
      */
     public static Result mostPopularThreadMay2013() {
+    	long startTime = System.nanoTime();
         List<Post> posts = findAllPosts();
         HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
@@ -292,9 +295,10 @@ public class ForumController extends Controller {
                 size = entry.getValue();
             }
         }
+		long stopTime = System.nanoTime();
 
         if (toReturn != null) {
-            return ok("Most popular thread in may 2013: " + toReturn + " with: " + size.toString() + " posts");
+            return ok("Most popular thread in may 2013: " + toReturn + " with: " + size.toString() + " posts."+ " Time: "+((stopTime-startTime)/1000000000.0));
         } else {
             return ok("Something went wrong :(");
         }
@@ -304,6 +308,7 @@ public class ForumController extends Controller {
     c
      */
     public static Result avgPostLength() {
+    	long startTime = System.nanoTime();
     	List<Post> posts = findAllPosts();
         BigDecimal length = new BigDecimal(0);
         BigDecimal count = new BigDecimal(0);
@@ -319,13 +324,16 @@ public class ForumController extends Controller {
         } else {
             avg = new BigDecimal(0);
         }
-        return ok("Avg post length: " + avg.toString());
+		long stopTime = System.nanoTime();
+
+        return ok("Avg post length: " + avg.toString()+ ". Time: "+((stopTime-startTime)/1000000000.0));
     }
 
     /*
     d
      */
     public static Result mostThreadsUser() {
+    	long startTime = System.nanoTime();
         List<Post> posts = findAllPosts();
 
         HashMap<String, List<String>> map = new HashMap<String, List<String>>();
@@ -350,9 +358,10 @@ public class ForumController extends Controller {
                 size = entry.getValue().size();
             }
         }
+		long stopTime = System.nanoTime();
 
         if (toReturn != null) {
-            return ok("User with most threads: " + toReturn + " with " + size + " threads");
+            return ok("User with most threads: " + toReturn + " with " + size + " threads."+ " Time: "+((stopTime-startTime)/1000000000.0));
         } else {
             return ok("Something went wrong :(");
         }
@@ -362,6 +371,7 @@ public class ForumController extends Controller {
      e
      */
     public static Result mostCommentedUser() {
+    	long startTime = System.nanoTime();
     	List<Post> allPosts = findAllPosts();
     	
         HashMap<String, List<String>> map = new HashMap<String, List<String>>();
@@ -386,9 +396,10 @@ public class ForumController extends Controller {
                 size = entry.getValue().size();
             }
         }
+		long stopTime = System.nanoTime();
 
         if (toReturn != null) {
-            return ok("User commented most other user: " + toReturn + " with " + size + " comments");
+            return ok("User commented most other user: " + toReturn + " with " + size + " comments."+ " Time: "+((stopTime-startTime)/1000000000.0));
         } else {
             return ok("Something went wrong :(");
         }
@@ -398,6 +409,7 @@ public class ForumController extends Controller {
     f
      */
     public static Result numberOfFrodoPosts() {
+    	long startTime = System.nanoTime();
         List<Post> posts = findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
@@ -407,13 +419,16 @@ public class ForumController extends Controller {
                 count = count.add(new BigDecimal(1));
             }
         }
-        return ok("Number of post with 'Frodo': " + count.toString());
+		long stopTime = System.nanoTime();
+
+        return ok("Number of post with 'Frodo': " + count.toString()+ ". Time: "+((stopTime-startTime)/1000000000.0));
     }
 
     /*
     g
      */
     public static Result numberOfPostsFromCityK() {
+    	long startTime = System.nanoTime();
         List<Post> posts = findAllPosts();
 
         BigDecimal count = new BigDecimal(0);
@@ -423,13 +438,16 @@ public class ForumController extends Controller {
                 count = count.add(new BigDecimal(1));
             }
         }
-        return ok("Number of post from users in 'K' city: " + count.toString());
+		long stopTime = System.nanoTime();
+
+        return ok("Number of post from users in 'K' city: " + count.toString()+ ". Time: "+((stopTime-startTime)/1000000000.0));
     }
 
     /*
     h
      */
     public static Result word35MostUsed() {
+    	long startTime = System.nanoTime();
         List<Post> posts = findAllPosts();
 
         HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
@@ -450,8 +468,9 @@ public class ForumController extends Controller {
         sorted_map.putAll(map);
         
         String word = sorted_map.keySet().toArray()[34].toString();
+		long stopTime = System.nanoTime();
         
-        return ok("35. most used word: " + word + " with " + map.get(word) + " appearances");
+        return ok("35. most used word: " + word + " with " + map.get(word) + " appearances." + " Time: "+((stopTime-startTime)/1000000000.0));
     }
 
     static class ValueComparator implements Comparator<String> {
