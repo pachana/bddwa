@@ -230,13 +230,34 @@ public class ForumController extends Controller {
     b
      */
     public static Result mostPopularThreadMay2013() {
-        // TODO: daty i zliczanie
-        EntityManager em = getEmf().createEntityManager();
-        em.setProperty("cql.version", "3.0.0");
-        Query query = em.createNativeQuery("SELECT * FROM posts WHERE (date > date(1 may 2013) AND date < date(31 may 2013))  LIMIT 100000", ForumThread.class);
-        List<ForumThread> threads= (List<ForumThread>) query.getResultList();
-        em.close();
-        return ok("Most popular thread in may 2013: " + threads.size());
+        // TODO: zrobienie porownywania dat przy wczytywaniu daty
+        List<Post> posts = findAllPosts();
+        HashMap<ForumThread, BigDecimal> map = new HashMap<ForumThread, BigDecimal>();
+
+        for (Post post : posts) {
+//            if (post.getDate().){
+                if (map.containsKey(post.getThread())) {
+                    map.get(post.getThread()).add(new BigDecimal(1));
+                } else {
+                    map.put(post.getThread(), new BigDecimal(1));
+                }
+//            }
+        }
+
+        ForumThread toReturn = null;
+        BigDecimal size = new BigDecimal(0);
+        for (Map.Entry<ForumThread, BigDecimal> entry : map.entrySet()) {
+            if (entry.getValue().compareTo(size) > 0) {
+                toReturn = entry.getKey();
+                size = entry.getValue();
+            }
+        }
+
+        if (toReturn != null) {
+            return ok("Most popular thread in may 2013: " + toReturn.getTitle() + " with: " + size.toString() + " threads");
+        } else {
+            return ok("Something went wrong :(");
+        }
     }
     
     /*
@@ -332,21 +353,6 @@ public class ForumController extends Controller {
     /*
     h
      */
-    static class ValueComparator implements Comparator<String> {
-
-        Map<String, BigDecimal> base;
-        public ValueComparator(Map<String, BigDecimal> base) {
-            this.base = base;
-        }
-
-        public int compare(String a, String b) {
-            if(base.get(a).compareTo(base.get(b)) >= 0)
-                return -1;
-            else
-                return 1;
-        }
-    }
-    
     public static Result word35MostUsed() {
         List<Post> posts = findAllPosts();
 
@@ -368,6 +374,21 @@ public class ForumController extends Controller {
         sorted_map.putAll(map);
         
         return ok("35. most used word: " + sorted_map.keySet().toArray()[34] + " with " + sorted_map.get(sorted_map.keySet().toArray()[34]) + " appearances");
+    }
+
+    static class ValueComparator implements Comparator<String> {
+
+        Map<String, BigDecimal> base;
+        public ValueComparator(Map<String, BigDecimal> base) {
+            this.base = base;
+        }
+
+        public int compare(String a, String b) {
+            if(base.get(a).compareTo(base.get(b)) >= 0)
+                return -1;
+            else
+                return 1;
+        }
     }
     
     public static List<Post> findAllPosts() {
