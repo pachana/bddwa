@@ -255,9 +255,11 @@ public class ForumController extends Controller {
         int size = 0;
 
         for (ForumThread forumThread : forumThreads) {
-            if (forumThread.getDate().getYear() == 2013){
-              size++;
-           }
+            if(forumThread.getDate() != null) {
+                if (forumThread.getDate().getYear() == 2013) {
+                    size++;
+                }
+            }
         }
         return ok("Number of threads created in 2013: " + size);
     }
