@@ -357,11 +357,38 @@ public class ForumController extends Controller {
     }
     
     /*
-     * e
+     e
      */
-    public static Result mostCommentedUser() {
-    	// TODO implement
-    	return ok("Not implemented yet");
+    public static Result mostCommentedUser() {List<Post> posts = findAllPosts();
+
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+
+        for (Post post : posts) {
+            if(post.getUser().getLogin() != getOldestThreadPost(post.getThread()).getUser().getLogin()) {
+                if (map.containsKey(post.getUser().getLogin())) {
+                    map.get(post.getUser().getLogin()).add(getOldestThreadPost(post.getThread()).getUser().getLogin());
+                } else {
+                    ArrayList<String> tmp = new ArrayList<String>();
+                    tmp.add(getOldestThreadPost(post.getThread()).getUser().getLogin());
+                    map.put(post.getUser().getLogin(), tmp);
+                }
+            }
+        }
+
+        String toReturn = null;
+        int size = 0;
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            if (entry.getValue().size() > size) {
+                toReturn = entry.getKey();
+                size = entry.getValue().size();
+            }
+        }
+
+        if (toReturn != null) {
+            return ok("User commented most other user: " + toReturn + " with " + size + " comments");
+        } else {
+            return ok("Something went wrong :(");
+        }
     }
 
     /*
